@@ -4,7 +4,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Drinks } from '../screens/drinks';
 import { Filters } from '../screens/filters';
 import { FiltersButton } from '../components/filters-button';
-import { Button, Text, TouchableOpacity } from 'react-native';
 
 const Stack = createStackNavigator();
 
