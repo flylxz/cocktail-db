@@ -1,56 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { ApplyBtn } from '../components/apply-button';
+import { MyContext } from '../routes/navigator';
 
-export const Filters = ({ text = 'Filters' }) => {
+export const Filters = () => {
 
-    const [filtersList, setFiltersList] = useState(
-    )
+    const { list } = useContext(MyContext)
 
-    const list = [
-        {
-            "strCategory": "Ordinary Drink", "isChecked": false
-        },
-        {
-            "strCategory": "Cocktail", "isChecked": false
-        },
-        {
-            "strCategory": "Milk \/ Float \/ Shake", "isChecked": false
-        },
-        {
-            "strCategory": "Other\/Unknown", "isChecked": false
-        },
-        {
-            "strCategory": "Cocoa", "isChecked": false
-        },
-        {
-            "strCategory": "Shot", "isChecked": false
-        },
-        {
-            "strCategory": "Coffee \/ Tea", "isChecked": false
-        },
-        {
-            "strCategory": "Homemade Liqueur", "isChecked": true
-        },
-        {
-            "strCategory": "Punch \/ Party Drink", "isChecked": false
-        },
-        {
-            "strCategory": "Beer", "isChecked": true
-        },
-        {
-            "strCategory": "Soft Drink \/ Soda", "isChecked": true
-        }
-    ]
+    // useEffect(() => {
+    //     console.log('mount');
+    //     // updateFilters();
+    //     return () => {
+    //         console.log('stop')
+    //     }
+    // }, [list])
 
-    useEffect(() => {
-        console.log('mount');
-        // updateFilters();
-        return () => {
-            console.log('stop')
-        }
-    }, [list])
+    const checkedFilters = list.filter((item) => item.isChecked)
 
     // const updateFilters = async () => {
     //     const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list');
@@ -66,9 +32,6 @@ export const Filters = ({ text = 'Filters' }) => {
             alignItems: 'center',
         }}
     />
-
-
-
 
     return (
         <View>

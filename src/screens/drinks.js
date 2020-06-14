@@ -2,18 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Button, View, Text, TouchableOpacity, FlatList, Image, ActivityIndicator, ToastAndroid } from 'react-native';
 
 export const Drinks = ({ navigation }) => {
+    // console.log(props)
 
     const [data, setData] = useState([]);
-    const [list, setList] = useState(0);
+    const [listIndex, setListIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
 
-    const queue = [/*"Ordinary Drink", "Cocktail", "Milk \/ Float \/ Shake", "Other\/Unknown", "Cocoa", "Shot", "Coffee \/ Tea", "Homemade Liqueur", "Punch \/ Party Drink",*/ "Beer", "Soft Drink \/ Soda"]
+    const queue = [/*"Ordinary Drink", "Cocktail",*/ "Milk \/ Float \/ Shake",/* "Other\/Unknown", "Cocoa", "Shot", "Coffee \/ Tea", "Homemade Liqueur", "Punch \/ Party Drink",*/ "Beer", "Soft Drink \/ Soda"]
 
 
     useEffect(() => {
         console.log('mount');
         setIsLoading(true);
-        getData(queue[list]);
+        getData(queue[listIndex]);
         return () => {
             console.log('stop')
         }
@@ -40,7 +41,7 @@ export const Drinks = ({ navigation }) => {
     const renderHeader = () => {
         return (
             <View>
-                <Text style={styles.itemHeader}>{queue[list]}</Text>
+                <Text style={styles.itemHeader}>{queue[listIndex]}</Text>
             </View>
         )
     }
@@ -58,32 +59,41 @@ export const Drinks = ({ navigation }) => {
     }
 
     const showToast = () => {
-        ToastAndroid.show("End of list!", ToastAndroid.LONG);
+        ToastAndroid.show("End of list!",
+            ToastAndroid.SHORT,
+            ToastAndroid.BOTTOM
+        );
     };
 
 
     const handleLoadMore = () => {
-        const listIndex = list + 1
-        if (listIndex <= queue.length) {
-            setList(listIndex)
+        const nextListIndex = listIndex + 1
+        if (nextListIndex <= queue.length) {
+            setListIndex(nextListIndex)
             setIsLoading(true)
-            getData(queue[listIndex])
+            getData(queue[nextListIndex])
         } else { showToast() }
     }
 
+    if (isLoading) {
+        return (
+            <View style={styles.loader}>
+                <ActivityIndicator size='large' />
+            </View>
+        )
+    }
+
     return (
-        <View>
-
-            <Button onPress={() => navigation.navigate('Filters')} title='filter' />
-
+        <View style={styles.container}>
             <FlatList
-                style={styles.container}
+                style={styles.flatList}
                 data={data}
                 renderItem={renderRow}
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={renderHeader}
+                stickyHeaderIndices={[0]}
                 onEndReached={handleLoadMore}
-                onEndReachedThreshold={1}
+                onEndReachedThreshold={0.5}
                 ListFooterComponent={renderFooter}
             />
         </View>
@@ -92,8 +102,11 @@ export const Drinks = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        margin: 20,
-        borderColor: '#E5E5E5',
+        backgroundColor: '#E5E5E5',
+    },
+    flatList: {
+        marginHorizontal: 20,
+        backgroundColor: '#E5E5E5',
     },
     itemRow: {
         flexDirection: 'row',
@@ -101,9 +114,12 @@ const styles = StyleSheet.create({
         marginVertical: 20,
     },
     itemHeader: {
+        textAlignVertical: 'center',
         fontSize: 14,
         lineHeight: 16,
         color: '#7E7E7E',
+        backgroundColor: '#e5E5E5',
+        height: 40
     },
     itemText: {
         fontSize: 16,
@@ -114,7 +130,6 @@ const styles = StyleSheet.create({
     itemImage: {
         width: 100,
         height: 100,
-        // resizeMode: 'cover',
     },
     loader: {
         marginTop: 10,

@@ -16,7 +16,7 @@ export const ApplyBtn = () => {
 const styles = StyleSheet.create({
     customBtn: {
         position: 'absolute',
-        bottom: 100,
+        bottom: 80,
         left: 25,
         right: 25,
         justifyContent: 'center',
