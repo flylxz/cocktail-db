@@ -12,6 +12,7 @@ export const RenderHeader = (title) => {
 const styles = StyleSheet.create({
     itemHeader: {
         textAlignVertical: 'center',
+        fontFamily: 'Roboto-Regular',
         fontSize: 14,
         lineHeight: 16,
         color: '#7E7E7E',

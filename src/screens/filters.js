@@ -75,9 +75,8 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     listItemText: {
-        // fontFamily: Roboto,
-        // fontStyle: normal,
-        // fontWeight: normal,
+        fontFamily: 'Roboto-Regular',
+        fontWeight: 'normal',
         fontSize: 16,
         lineHeight: 19,
         color: '#7E7E7E',

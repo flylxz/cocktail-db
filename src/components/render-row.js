@@ -7,8 +7,8 @@ export const RenderRow = ({ item }) => {
             <Image source={{ uri: item.strDrinkThumb }} style={styles.itemImage} />
             <Text style={styles.itemText}>{item.strDrink}</Text>
         </View>
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
     itemRow: {
@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
         marginVertical: 20,
     },
     itemText: {
+        fontFamily: 'Roboto-Regular',
         fontSize: 16,
         lineHeight: 19,
         margin: 20,
@@ -25,5 +26,5 @@ const styles = StyleSheet.create({
     itemImage: {
         width: 100,
         height: 100,
-    }
-})
+    },
+});

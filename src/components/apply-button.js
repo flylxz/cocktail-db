@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#272727'
     },
     btnText: {
+        fontFamily: 'Roboto-Regular',
         fontSize: 16,
         lineHeight: 19,
         fontWeight: 'bold',
