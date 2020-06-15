@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-export const ApplyBtn = () => {
+export const ApplyBtn = ({ applyFilters }) => {
     return (
         <TouchableOpacity
             style={styles.customBtn}
-            onPress={() => console.log('apply')}>
+            onPress={applyFilters}>
             <View>
                 <Text style={styles.btnText}>APPLY</Text>
             </View>
@@ -17,8 +17,8 @@ const styles = StyleSheet.create({
     customBtn: {
         position: 'absolute',
         bottom: 80,
-        left: 25,
-        right: 25,
+        left: 30,
+        right: 30,
         justifyContent: 'center',
         alignItems: 'center',
         height: 50,

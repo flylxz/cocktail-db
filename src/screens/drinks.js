@@ -1,70 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Button, View, Text, TouchableOpacity, FlatList, Image, ActivityIndicator, ToastAndroid } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { StyleSheet, View, FlatList, ActivityIndicator } from 'react-native';
+import { RenderRow } from '../components/render-row';
+import { RenderHeader } from '../components/render-header';
+import { RenderFooter } from '../components/render-footer';
+import { ShowToast } from '../components/show-toast';
 
-export const Drinks = ({ navigation }) => {
-    // console.log(props)
-
-    const [data, setData] = useState([]);
-    const [listIndex, setListIndex] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
-
-    const queue = [/*"Ordinary Drink", "Cocktail",*/ "Milk \/ Float \/ Shake",/* "Other\/Unknown", "Cocoa", "Shot", "Coffee \/ Tea", "Homemade Liqueur", "Punch \/ Party Drink",*/ "Beer", "Soft Drink \/ Soda"]
+import { MyContext } from '../components/base';
 
 
-    useEffect(() => {
-        console.log('mount');
-        setIsLoading(true);
-        getData(queue[listIndex]);
-        return () => {
-            console.log('stop')
-        }
-    }, [])
+export const Drinks = () => {
+    const {
+        data,
+        getData,
+        queue,
+        listIndex,
+        setListIndex,
+        isLoading,
+        setIsLoading,
+    } = useContext(MyContext);
 
-    const getData = async (filter) => {
-        const apiUrl = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${filter}`
-        fetch(apiUrl)
-            .then(res => res.json())
-            .then(resJson => setData([...data, ...resJson.drinks]))
-            .then(setIsLoading(false));
-    }
+    // const [listIndex, setListIndex] = useState(0);
+    // const [isLoading, setIsLoading] = useState(false);
+
+    // useEffect(() => {
+    //     console.log('mount');
+    //     setIsLoading(true);
+    //     getData(queue[listIndex]);
+    //     return () => {
+    //         console.log('stop')
+    //     }
+    // }, [queue])
 
 
-    const renderRow = ({ item }) => {
-        return (
-            <View style={styles.itemRow}>
-                <Image source={{ uri: item.strDrinkThumb }} style={styles.itemImage} />
-                <Text style={styles.itemText}>{item.strDrink}</Text>
-            </View>
-        )
-    }
-
-    const renderHeader = () => {
-        return (
-            <View>
-                <Text style={styles.itemHeader}>{queue[listIndex]}</Text>
-            </View>
-        )
-    }
-
-    const renderFooter = () => {
-        return (
-            isLoading
-                ? (
-                    <View style={styles.loader}>
-                        <ActivityIndicator size='large' />
-                    </View>
-                )
-                : null
-        )
-    }
-
-    const showToast = () => {
-        ToastAndroid.show("End of list!",
-            ToastAndroid.SHORT,
-            ToastAndroid.BOTTOM
-        );
-    };
-
+    // const getData = async (filter) => {
+    //     const apiUrl = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${filter}`
+    //     fetch(apiUrl)
+    //         .then(res => res.json())
+    //         .then(resJson => setData([...data, ...resJson.drinks]))
+    //         .then(setIsLoading(false));
+    // }
 
     const handleLoadMore = () => {
         const nextListIndex = listIndex + 1
@@ -72,13 +46,15 @@ export const Drinks = ({ navigation }) => {
             setListIndex(nextListIndex)
             setIsLoading(true)
             getData(queue[nextListIndex])
-        } else { showToast() }
+        } else { ShowToast() }
     }
 
-    if (isLoading) {
+    if (data.length === 0) {
         return (
-            <View style={styles.loader}>
-                <ActivityIndicator size='large' />
+            <View style={styles.container}>
+                <View style={styles.loader}>
+                    <ActivityIndicator size='large' />
+                </View>
             </View>
         )
     }
@@ -88,13 +64,13 @@ export const Drinks = ({ navigation }) => {
             <FlatList
                 style={styles.flatList}
                 data={data}
-                renderItem={renderRow}
+                renderItem={RenderRow}
                 keyExtractor={(item, index) => index.toString()}
-                ListHeaderComponent={renderHeader}
+                ListHeaderComponent={() => RenderHeader(queue[listIndex])}
                 stickyHeaderIndices={[0]}
                 onEndReached={handleLoadMore}
                 onEndReachedThreshold={0.5}
-                ListFooterComponent={renderFooter}
+                ListFooterComponent={() => RenderFooter(isLoading)}
             />
         </View>
     );
@@ -102,56 +78,18 @@ export const Drinks = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: '#E5E5E5',
     },
     flatList: {
         marginHorizontal: 20,
+        width: '90%',
         backgroundColor: '#E5E5E5',
-    },
-    itemRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 20,
-    },
-    itemHeader: {
-        textAlignVertical: 'center',
-        fontSize: 14,
-        lineHeight: 16,
-        color: '#7E7E7E',
-        backgroundColor: '#e5E5E5',
-        height: 40
-    },
-    itemText: {
-        fontSize: 16,
-        lineHeight: 19,
-        margin: 20,
-        color: '#7E7E7E',
-    },
-    itemImage: {
-        width: 100,
-        height: 100,
     },
     loader: {
         marginTop: 10,
         alignItems: 'center',
-    },
-    dummy: {
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        justifyContent: 'center',
-        alignItems: 'center',
-        transform: [{ rotate: '-25deg' }],
-    },
-    dummyText: {
-        padding: 10,
-        fontSize: 36,
-        color: 'red',
-        borderWidth: 5,
-        borderColor: 'red',
-        borderStyle: 'dashed',
-        borderRadius: 5,
     },
 });

@@ -1,28 +1,28 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { ApplyBtn } from '../components/apply-button';
-import { MyContext } from '../routes/navigator';
+import { MyContext } from '../components/base';
+import { useNavigation } from '@react-navigation/native';
 
 export const Filters = () => {
 
-    const { list } = useContext(MyContext)
+    const { setQueue, setData, filtersList, setFiltersList, extractFiltersName } = useContext(MyContext);
 
-    // useEffect(() => {
-    //     console.log('mount');
-    //     // updateFilters();
-    //     return () => {
-    //         console.log('stop')
-    //     }
-    // }, [list])
+    const renderFiltersList = [...filtersList];
 
-    const checkedFilters = list.filter((item) => item.isChecked)
+    const navigation = useNavigation();
 
-    // const updateFilters = async () => {
-    //     const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list');
-    //     const data = await response.json();
-    //     setFiltersList(data.drinks);
-    // }
+    const toggleCheck = (item) => {
+        item.isChecked = !item.isChecked;
+        setFiltersList([...renderFiltersList]);
+    };
+
+    const applyFilters = () => {
+        setQueue(extractFiltersName(filtersList));
+        setData([]);
+        navigation.goBack();
+    }
 
     const icon = <FontAwesome5
         name={'check'}
@@ -34,17 +34,15 @@ export const Filters = () => {
     />
 
     return (
-        <View>
+        <View style={styles.container}>
             <FlatList
-                data={list}
+                style={styles.flatList}
+                data={renderFiltersList}
                 renderItem={({ item }) => (
                     <TouchableOpacity
-                        onPress={() => {
-                            item.isChecked = !item.isChecked
-                            console.log(item)
-                        }}>
+                        onPress={() => toggleCheck(item)}>
                         <View style={styles.listItem}>
-                            <Text style={styles.listItemText}>{item.strCategory}</Text>
+                            <Text style={styles.listItemText}>{item.name}</Text>
                             <View>{item.isChecked && icon}</View>
                         </View>
                     </TouchableOpacity>
@@ -52,12 +50,24 @@ export const Filters = () => {
                 }
                 keyExtractor={(item, index) => index.toString()}
             />
-            <ApplyBtn />
+            <ApplyBtn applyFilters={applyFilters} />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#E5E5E5',
+    },
+    flatList: {
+        marginHorizontal: 20,
+        marginBottom: 25,
+        width: '90%',
+        backgroundColor: '#E5E5E5',
+    },
     listItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',

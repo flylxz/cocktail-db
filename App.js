@@ -1,9 +1,9 @@
 import React from 'react';
 import 'react-native-gesture-handler';
-import { Navigator } from './src/routes/navigator';
+import { Base } from './src/components/base';
 
 const App = () => {
-  return <Navigator />;
+  return <Base />;
 };
 
 export default App;
