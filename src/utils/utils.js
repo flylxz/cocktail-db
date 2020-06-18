@@ -7,4 +7,13 @@ export class Utils {
         return queue;
     };
 
+    addIsCheckedField = (filtersList) => {
+        return filtersList.drinks.map(item => {
+            return {
+                name: item.strCategory,
+                isChecked: true
+            }
+        })
+    };
+
 };
