@@ -1,45 +1,49 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, FlatList, ActivityIndicator } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { StyleSheet, View, FlatList, Text, ActivityIndicator } from 'react-native';
+
+import { MyContext } from '../components/base';
 import { RenderRow } from '../components/render-row';
 import { RenderHeader } from '../components/render-header';
 import { RenderFooter } from '../components/render-footer';
 import { ShowToast } from '../components/show-toast';
-// import { Error } from '../components/error';
 
-import { MyContext } from '../components/base';
 
 export const Drinks = () => {
     const {
-        data, getData,
+        data,
+        getData,
         queue,
         listIndex,
         setListIndex,
         isLoading, setIsLoading,
-        // error, setError
     } = useContext(MyContext);
 
     const handleLoadMore = () => {
-        const nextListIndex = listIndex + 1
-        if (nextListIndex <= queue.length) {
-            setListIndex(nextListIndex)
-            setIsLoading(true)
-            getData(queue[nextListIndex])
-        } else { ShowToast }
+        setIsLoading(false);
+        const nextListIndex = listIndex + 1;
+        if (nextListIndex > queue.length) {
+            return ShowToast();
+        }
+        setIsLoading(true);
+        setListIndex(nextListIndex);
+        getData(queue[nextListIndex]);
     }
 
-    // if (error) {
-    //     return (
-    //         <View style={styles.container}>
-    //             <Error text={'Error'} setError={setError} />
-    //         </View>
-    //     )
-    // }
+    if (data.length === 0 && queue.length === 0) {
+        return (
+            <View style={styles.container}>
+                <View style={styles.loader}>
+                    <Text style={styles.ordinaryText}>Choose drinks category</Text>
+                </View>
+            </View>
+        )
+    }
 
     if (data.length === 0) {
         return (
             <View style={styles.container}>
                 <View style={styles.loader}>
-                    <ActivityIndicator size='large' />
+                    <ActivityIndicator size='large' animating />
                 </View>
             </View>
         )
@@ -50,7 +54,7 @@ export const Drinks = () => {
             <FlatList
                 style={styles.flatList}
                 data={data}
-                renderItem={RenderRow}
+                renderItem={({ item }) => RenderRow(item)}
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={() => RenderHeader(queue[listIndex])}
                 stickyHeaderIndices={[0]}
@@ -78,4 +82,11 @@ const styles = StyleSheet.create({
         marginTop: 10,
         alignItems: 'center',
     },
+    ordinaryText: {
+        fontFamily: 'Roboto-Regular',
+        fontWeight: 'normal',
+        fontSize: 20,
+        lineHeight: 19,
+        color: '#7E7E7E',
+    }
 });

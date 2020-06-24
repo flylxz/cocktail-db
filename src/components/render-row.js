@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 
-export const RenderRow = ({ item }) => {
+export const RenderRow = (item) => {
     return (
         <View style={styles.itemRow}>
             <Image source={{ uri: item.strDrinkThumb }} style={styles.itemImage} />

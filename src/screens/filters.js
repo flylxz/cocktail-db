@@ -1,13 +1,20 @@
 import React, { useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { ApplyBtn } from '../components/apply-button';
-import { MyContext } from '../components/base';
 import { useNavigation } from '@react-navigation/native';
+
+import { MyContext } from '../components/base';
+import { ApplyBtn } from '../components/apply-button';
+import { checkIcon } from '../icons/icons';
 
 export const Filters = () => {
 
-    const { setQueue, setData, filtersList, setFiltersList, extractFiltersName } = useContext(MyContext);
+    const {
+        setQueue,
+        setData,
+        filtersList, setFiltersList,
+        setListIndex,
+        extractFiltersName
+    } = useContext(MyContext);
 
     const renderFiltersList = [...filtersList];
 
@@ -15,23 +22,15 @@ export const Filters = () => {
 
     const toggleCheck = (item) => {
         item.isChecked = !item.isChecked;
-        setFiltersList([...renderFiltersList]);
+        setFiltersList(renderFiltersList);
     };
 
     const applyFilters = () => {
-        setQueue(extractFiltersName(filtersList));
         setData([]);
+        setListIndex(0);
+        setQueue(extractFiltersName(filtersList));
         navigation.goBack();
     }
-
-    const icon = <FontAwesome5
-        name={'check'}
-        size={18}
-        color='#000'
-        style={{
-            alignItems: 'center',
-        }}
-    />
 
     return (
         <View style={styles.container}>
@@ -43,7 +42,7 @@ export const Filters = () => {
                         onPress={() => toggleCheck(item)}>
                         <View style={styles.listItem}>
                             <Text style={styles.listItemText}>{item.name}</Text>
-                            <View>{item.isChecked && icon}</View>
+                            <View>{item.isChecked && checkIcon}</View>
                         </View>
                     </TouchableOpacity>
                 )

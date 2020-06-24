@@ -8,18 +8,20 @@ export class CocktailDBService {
             .then(responseJson => {
                 return responseJson
             })
-            .catch((error) => {
-                console.warn('Error from service: ', error.message)
-            })
     };
 
     getFiltersList = async () => {
-        const res = this.getResource('list.php?c=list')
-        return res
+        return this.getResource('list.php?c=list')
+            .catch((error) => {
+                console.warn('Error from getFiltersList: ', error)
+            })
     };
 
     getDrinksList = async (filter) => {
-        const res = this.getResource(`filter.php?c=${filter}`)
-        return res
-    };
+        return this.getResource(`filter.php?c=${filter}`)
+            .then(res => res.drinks)
+            .catch((error) => {
+                console.warn('Error from getDrinksList: ', error)
+            });
+    }
 }
