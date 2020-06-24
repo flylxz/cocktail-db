@@ -31,8 +31,10 @@ export const Base = () => {
     const initialGetData = async () => {
         getFiltersList()
             .then(resJson => addIsCheckedField(resJson))
-            .then(res => setFiltersList(res))
-            .then(res => setQueue(extractFiltersName(res)))
+            .then(res => {
+                setFiltersList(res)
+                setQueue(extractFiltersName(res))
+            });
     }
 
     const getData = async (filter) => {

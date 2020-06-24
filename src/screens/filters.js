@@ -16,13 +16,17 @@ export const Filters = () => {
         extractFiltersName
     } = useContext(MyContext);
 
-    const renderFiltersList = [...filtersList];
+    // const renderFiltersList = [...filtersList];
 
     const navigation = useNavigation();
 
-    const toggleCheck = (item) => {
-        item.isChecked = !item.isChecked;
-        setFiltersList(renderFiltersList);
+    const toggleCheck = (item, index) => {
+        const tempFiltersList = [...filtersList];
+        // console.log(tempFiltersList[index].name)
+        if (item.name === tempFiltersList[index].name) {
+            item.isChecked = !item.isChecked;
+        }
+        setFiltersList(tempFiltersList);
     };
 
     const applyFilters = () => {
@@ -36,10 +40,10 @@ export const Filters = () => {
         <View style={styles.container}>
             <FlatList
                 style={styles.flatList}
-                data={renderFiltersList}
-                renderItem={({ item }) => (
+                data={filtersList}
+                renderItem={({ item, index }) => (
                     <TouchableOpacity
-                        onPress={() => toggleCheck(item)}>
+                        onPress={() => toggleCheck(item, index)}>
                         <View style={styles.listItem}>
                             <Text style={styles.listItemText}>{item.name}</Text>
                             <View>{item.isChecked && checkIcon}</View>
