@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, View, FlatList, Text, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, FlatList, Text, Platform, ActivityIndicator } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { MyContext } from '../components/base';
 import { RenderRow } from '../components/render-row';
@@ -7,29 +8,34 @@ import { RenderHeader } from '../components/render-header';
 import { RenderFooter } from '../components/render-footer';
 import { ShowToast } from '../components/show-toast';
 
+import { setDrinksList, setDrinksListQueue, setListIndex, setIsLoading } from '../redux/actions/drinks';
+
 
 export const Drinks = () => {
+    const dispatch = useDispatch();
+    const { drinksList, drinksListQueue, listIndex, isLoading } = useSelector(({ drinks }) => drinks);
+    // console.log(drinksList, drinksListQueue, listIndex, isLoading);
+
     const {
-        data,
+        //     // data,
         getData,
-        queue,
-        listIndex,
-        setListIndex,
-        isLoading, setIsLoading,
+        //     // queue,
+        //     // listIndex, setListIndex,
+        //     // isLoading, setIsLoading,
     } = useContext(MyContext);
 
     const handleLoadMore = () => {
-        setIsLoading(false);
+        dispatch(setIsLoading(false));
         const nextListIndex = listIndex + 1;
-        if (nextListIndex > queue.length) {
+        if (nextListIndex > drinksListQueue.length) {
             return ShowToast();
         }
-        setIsLoading(true);
-        setListIndex(nextListIndex);
-        getData(queue[nextListIndex]);
+        dispatch(setIsLoading(true));
+        dispatch(setListIndex(nextListIndex));
+        getData(drinksListQueue[nextListIndex]);
     }
 
-    if (data.length === 0 && queue.length === 0) {
+    if (drinksList.length === 0 && drinksListQueue.length === 0) {
         return (
             <View style={styles.container}>
                 <View style={styles.loader}>
@@ -39,7 +45,7 @@ export const Drinks = () => {
         )
     }
 
-    if (data.length === 0) {
+    if (drinksList.length === 0) {
         return (
             <View style={styles.container}>
                 <View style={styles.loader}>
@@ -53,10 +59,10 @@ export const Drinks = () => {
         <View style={styles.container}>
             <FlatList
                 style={styles.flatList}
-                data={data}
+                data={drinksList}
                 renderItem={({ item }) => RenderRow(item)}
                 keyExtractor={(item, index) => index.toString()}
-                ListHeaderComponent={() => RenderHeader(queue[listIndex])}
+                ListHeaderComponent={() => RenderHeader(drinksListQueue[listIndex])}
                 stickyHeaderIndices={[0]}
                 onEndReached={handleLoadMore}
                 onEndReachedThreshold={0.5}

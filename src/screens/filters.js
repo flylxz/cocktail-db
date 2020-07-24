@@ -1,38 +1,44 @@
 import React, { useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { MyContext } from '../components/base';
 import { ApplyBtn } from '../components/apply-button';
 import { checkIcon } from '../icons/icons';
 
+import { setFiltersList } from '../redux/actions/filters';
+import { setDrinksList, setDrinksListQueue, setListIndex } from '../redux/actions/drinks';
+
 export const Filters = () => {
+    const dispatch = useDispatch();
+    const { filtersList } = useSelector(({ filters }) => filters);
 
     const {
-        setQueue,
-        setData,
-        filtersList, setFiltersList,
-        setListIndex,
+        // setQueue,
+        // setData,
+        // filtersList, setFiltersList,
+        // setListIndex,
         extractFiltersName
     } = useContext(MyContext);
 
-    // const renderFiltersList = [...filtersList];
 
     const navigation = useNavigation();
 
+    let renderFiltersList = [...filtersList];
+
     const toggleCheck = (item, index) => {
-        const tempFiltersList = [...filtersList];
-        // console.log(tempFiltersList[index].name)
+        const tempFiltersList = [...renderFiltersList];
         if (item.name === tempFiltersList[index].name) {
             item.isChecked = !item.isChecked;
         }
-        setFiltersList(tempFiltersList);
+        dispatch(setFiltersList(tempFiltersList));
     };
 
     const applyFilters = () => {
-        setData([]);
-        setListIndex(0);
-        setQueue(extractFiltersName(filtersList));
+        dispatch(setDrinksList([]));
+        dispatch(setListIndex(0));
+        dispatch(setDrinksListQueue(extractFiltersName(filtersList)));
         navigation.goBack();
     }
 
@@ -40,7 +46,7 @@ export const Filters = () => {
         <View style={styles.container}>
             <FlatList
                 style={styles.flatList}
-                data={filtersList}
+                data={renderFiltersList}
                 renderItem={({ item, index }) => (
                     <TouchableOpacity
                         onPress={() => toggleCheck(item, index)}>
